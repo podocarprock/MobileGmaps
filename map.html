@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+	<meta name="MobileOptimized" content="width" />
+	<meta name="HandheldFriendly" content="true" />
+	<meta charset="utf-8" />
+	<title>MobileGmaps</title>
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+	<link rel="stylesheet"  href="//code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+	<script src="//code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+
+	<link rel="stylesheet" href="mos.css" type="text/css" />
+
+	<script type="text/javascript" src="https://maps-api-ssl.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" charset="utf-8">
+	//<![CDATA[
+	
+	var map;
+	var marker;
+	var gmarkers =new Array();
+	var shoplisthtml = '';
+
+	function onLoad() {
+
+		var intLon = document.getElementById("mapX").value;
+		var intLat = document.getElementById("mapY").value;
+
+		var latlng = new google.maps.LatLng(intLat, intLon);
+		var myOptions = {
+			zoom: 15,
+			center: latlng,
+			featureType: "all",
+			elementType: "all",
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			streetViewControl: false
+		};
+		var map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+		var marker = new google.maps.Marker({
+			position: latlng, 
+			map: map, 
+			title:"店舗名"
+		});
+
+		google.maps.event.addListener( map , "center_changed" , function(){
+			LatLngObj = map.getCenter();
+			document.getElementById("mapX").value = LatLngObj.lng();
+			document.getElementById("mapY").value = LatLngObj.lat();
+		});
+	
+		// 半径と塗りつぶす色の配列  
+		var radii = new google.maps.MVCArray([  
+			["#ff0000", 500],["#ff0000", 1500]
+		]);
+
+		// 円のオプション（固定）
+		var circleOptions = {  
+			center: latlng,			// 中心点(google.maps.LatLng)
+			radius: null,			// 半径（ｍ）
+			strokeWeight: 1,		// 外周太さ（ピクセル）
+			strokeColor: "#000055",	// 外周色
+			strokeOpacity: 0.8,		// 外周透過度（0: 透明 ⇔ 1:不透明）
+			fillColor: null,		// 塗りつぶし色
+			fillOpacity: 0			// 塗りつぶし透過度（0: 透明 ⇔ 1:不透明）
+		};
+
+		// 円を設定
+		radii.forEach(function(radius, index)
+		{  
+			circleOptions.fillColor = radius[0]
+			circleOptions.radius = radius[1];
+			var circle = new google.maps.Circle(circleOptions);
+			circle.setMap(map);
+		});
+
+		//競合リストからマーカーを作成
+		for (var i = 0; i < cvslist.length; i++) {
+			var shopdata = cvslist[i];
+			shoplisthtml += shopdata[3];
+			setMarkers(map, shopdata);
+		};
+	}
+	function setMarkers(map, locations)
+	{
+		var image = new google.maps.MarkerImage('/markers/numbered_marker.php?image=pushpins/webhues/' + locations[2]);
+		var myLatLng = new google.maps.LatLng(locations[1], locations[0]);
+		var marker = new google.maps.Marker({
+			position: myLatLng,
+			icon: image,
+			map: map
+		});
+		gmarkers.push(marker);
+		google.maps.event.addListener(marker, 'click', function() {
+			//map.setCenter(myLatLng);
+			map.panTo(myLatLng);
+			infoWindow.close();
+			infoWindow.setContent('<div>' + locations[3] + '</div>');
+			infoWindow.open(map,marker); 
+		});
+	}
+
+	var infoWindow = new google.maps.InfoWindow();
+	// This function picks up the click and opens the corresponding info window
+	function myclick(i) {
+		google.maps.event.trigger(gmarkers[i],"click");
+	}
+//]]>
+</script>
+
+</head>
+<body onload="onLoad()" class="mappage">
+
+<div data-role="header" data-theme="f" id="header">
+	<a href="./Default.aspx" data-icon="mosicon" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>
+	<h1>最寄り地図</h1>
+</div>
+
+<div id="map" class="maparea">Loading...</div>
+
+	<div data-role="content">
+	<form action="sfs_toshi.aspx">
+		<fieldset class="ui-grid-a">
+			<div class="ui-block-a"><input type="hidden" id="mapX" name="LON" value="" /></div>
+			<div class="ui-block-b"><input type="hidden" id="mapY" name="LAT" value="" /></div>
+		</fieldset>
+		<input type="button" name="submit" value="中心点更新" onclick="javascript:onLoad();" />
+	</form>
+	</div>
+</body>
+</html>
