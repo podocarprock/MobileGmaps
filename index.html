@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+	<meta name="MobileOptimized" content="width" />
+	<meta name="HandheldFriendly" content="true" />
+	<meta charset="utf-8" />
+	<title>MobileGmaps</title>
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+	<link rel="stylesheet"  href="//code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+	<script src="//code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+
+	<link rel="stylesheet" href="site.css" type="text/css" />
+
+	<script type="text/javascript" src="https://maps-api-ssl.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="site.js"></script>
+
+</head>
+<body>
+<div data-role="page" class="type-index" >
+
+	<div data-role="header" data-theme="f" id="header">
+		<a href="./Default.aspx" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>
+		<h1>MobileGmaps</h1>
+	</div>
+
+	<div data-role="content">
+
+		<form id="lonlat"  data-ajax="false">
+		<input class="subm" type="button" value="現在地から地図表示" onclick="showPos()"/></form>
+
+		<a href="sfs_list.aspx" data-role="button">物件リスト</a>
+
+		<div data-role="collapsible-set">
+
+			<div data-role="collapsible">
+			<h3>駅検索</h3>
+				<form id="eki" method="get" action="eki_search.aspx" autocomplete="off">
+				<div data-role="fieldcontain">
+					<label for="ekisearch">駅名</label>
+					<input id="ekisearch" name="name" type="search" required/>
+					<input class="subm" type="submit" name="submit" value="検索" />
+				</div>
+				</form>
+			</div>
+
+			<div data-role="collapsible">
+			<h3>町丁目検索</h3>
+				<form id="chomoku" method="get" action="addr_search.aspx" autocomplete="off">
+				<div data-role="fieldcontain">
+					<label for="addrsearch">町名</label>
+					<input id="addrsearch" name="name" type="search" required/>
+					<input class="subm" type="submit" name="submit" value="検索" />
+				</div>
+				<p>※競合店の追加もこちらから</p>
+				</form>
+			</div>
+
+			<div data-role="collapsible">
+			<h3>既存店検索</h3>
+				<form id="store" method="get" action="store_search.aspx" autocomplete="off">
+				<div data-role="fieldcontain">
+					<label for="storesearch">店名・住所検索</label>
+					<input id="storesearch" name="name" type="search" required/>
+					<input name="mode" type="hidden" value="MOS" />
+					<input class="subm" type="submit" name="submit" value="検索" />
+				</div>
+				</form>
+			</div>
+
+			<div data-role="collapsible">
+			<h3>競合店検索</h3>
+				<form id="comp" method="get" action="store_search.aspx" autocomplete="off">
+				<div data-role="fieldcontain">
+					<label for="compsearch">店名・住所検索</label>
+					<input id="compsearch" name="name" type="search" required/>
+					<input class="subm" type="submit" name="submit" value="検索" />
+				</div>
+				</form>
+			</div>
+
+			<div data-role="collapsible">
+			<h3>SC検索</h3>
+				<form id="sc" method="get" action="sc_search.aspx" autocomplete="off">
+				<div data-role="fieldcontain">
+					<label for="scsearch">SC名・SC住所から検索</label>
+					<input id="scsearch" name="name" type="search" required/>
+					<input class="subm" type="submit" name="submit" value="検索" />
+				</div>
+				</form>
+			</div>
+
+		</div>
+	</div>
+</div>
+</body>
+</html>
